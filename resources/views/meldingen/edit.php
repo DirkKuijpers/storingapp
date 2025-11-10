@@ -3,80 +3,90 @@
 
 <head>
     <title>StoringApp / Meldingen / Aanpassen</title>
-    <?php require_once '../head.php'; ?>
+    <?php require_once '../components/head.php'; ?>
 </head>
 
 <body>
-    <?php 
+<?php 
+if(!isset($_GET['id'])){
+    echo "Geef in je aanpaslink op de index.php het id van betreffende item mee.";
+    exit;
+}
+require_once '../components/header.php'; 
+?>
 
-    if(!isset($_GET['id'])){
-        echo "Geef in je aanpaslink op de index.php het id van betreffende item mee achter de URL in je a-element om deze pagina werkend te krijgen na invoer van je vijfstappenplan";
-        exit;
+<div class="container">
+    <h1>Melding aanpassen</h1>
 
-    }
-    ?>
     <?php
-        require_once '../header.php'; ?>
+    // Haal het id uit de URL
+    $id = $_GET['id'];
 
-    <div class="container">
-        <h1>Melding aanpassen</h1>
+    // 1. Verbinding
+    require_once '../../../config/conn.php';
 
-        <?php
-        //Haal het id uit de URL:
-        $id = //...............;
+    // 2. Query: haal alleen de melding met dit id
+    $query = "SELECT * FROM meldingen WHERE id = :id";
 
-        //1. Haal de verbinding erbij
-        //...........
+    // 3. Prepare
+    $statement = $conn->prepare($query);
 
-        //2. Query, vul deze aan met een WHERE zodat je alleen de melding met dit id ophaalt
-        //...........
+    // 4. Execute met placeholder
+    $statement->execute([':id' => $id]);
 
-        //3. Van query naar statement
-        $statement = $conn->prepare($query);
+    // 5. Ophalen gegevens
+    $melding = $statement->fetch(PDO::FETCH_ASSOC);
 
-        //4. Voer de query uit, voeg hier nog de placeholder toe
-        $statement->execute([
-            //................
-        ]);
+    if(!$melding){
+        echo "Geen melding gevonden met id $id";
+        exit;
+    }
+    // print_r($melding); // kun je tijdelijk gebruiken voor testen
+    ?>
 
-        //5. Ophalen gegevens, tip: gebruik hier fetch().
-        $melding = "text";
-        ?>
+    <!-- Formulier -->
+    <form action="update.php" method="POST">
+        <!-- Hidden field voor id -->
+        <input type="hidden" name="id" value="<?php echo $melding['id']; ?>">
 
-        <form action="........." method="POST">
-            <!-- (voeg hier opdracht 7 toe) -->
+        <div class="form-group">
+            <label>Naam attractie:</label>
+            <p style="margin:0;"><?php echo $melding['attractie']; ?></p>
+        </div>
 
-            <div class="form-group">
-                <label>Naam attractie:</label>
-                <?php echo $melding['attractie']; ?>
-            </div>
-            <!-- Zorg dat het type wordt getoond, net als de naam hierboven -->
-            <div class="form-group">
-                <label for="capaciteit">Capaciteit p/uur:</label>
-                <input type="number" min="0" name="capaciteit" id="capaciteit" class="form-input"
-                    value="<?php echo $melding['capaciteit']; ?>">
-            </div>
-            <div class="form-group">
-                <label for="prioriteit">Prio:</label>
-                <!-- Let op: de checkbox blijft nu altijd uit, pas dit nog aan -->
-                <input type="checkbox" name="prioriteit" id="prioriteit">
-                <label for="prioriteit">Melding met prioriteit</label>
-            </div>
-            <div class="form-group"> 
-                <label for="melder">Naam melder:</label>
-                <!-- Voeg hieronder nog een value-attribuut toe, zoals bij capaciteit -->
-                <input type="text" name="melder" id="melder" class="form-input">
-            </div>
-            <div class="form-group">
-                <label for="overig">Overige info:</label>
-                <textarea name="overig" id="overig" class="form-input" rows="4">.....</textarea>
-            </div>
-            
-            <input type="submit" value="Melding opslaan">
+        <div class="form-group">
+            <label>Type:</label>
+            <p style="margin:0;"><?php echo $melding['type']; ?></p>
+        </div>
 
-        </form>
-    </div>  
+        <!-- Daarna de andere velden -->
+        <div class="form-group">
+            <label for="capaciteit">Capaciteit p/uur:</label>
+            <input type="number" min="0" name="capaciteit" id="capaciteit" class="form-input"
+                value="<?php echo $melding['capaciteit']; ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="prioriteit">Prio:</label>
+            <input type="checkbox" name="prioriteit" id="prioriteit"
+                <?php echo ($melding['prioriteit'] == 1) ? "checked" : ""; ?>>
+            <label for="prioriteit">Melding met prioriteit</label>
+        </div>
+
+        <div class="form-group"> 
+            <label for="melder">Naam melder:</label>
+            <input type="text" name="melder" id="melder" class="form-input" 
+                value="<?php echo $melding['melder']; ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="overig">Overige info:</label>
+            <textarea name="overig" id="overig" class="form-input" rows="4"><?php echo $melding['overige_info']; ?></textarea>
+        </div>
+
+        <input type="submit" value="Melding opslaan">
+    </form>
+</div>  
 
 </body>
-
 </html>

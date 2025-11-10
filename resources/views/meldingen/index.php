@@ -27,9 +27,10 @@
             $statement = $conn->prepare($query);
             $statement->execute();
             $meldingen = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach($meldingen as $melding) {
+                echo "<p>" . $melding['attractie'] . ", type: " . $melding['type'] . "</p>";
+            }
         ?>
-
-        <pre><?php print_r($meldingen); ?></pre>
 
 
     </div>

@@ -39,8 +39,21 @@
                 <input type="number" min="0" name="capaciteit" id="capaciteit" class="form-input">
             </div>
             <div class="form-group">
+            <div class="form-group">
+                <label for="prioriteit">Prio:</label>
+                <input type="checkbox" name="prioriteit">
+                Melding met prioriteit
+                </label>
+</div>
+
+            </div>
+            <div class="form-group">
                 <label for="melder">Naam melder:</label>
                 <input type="text" name="melder" id="melder" class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="overig">Overige info:</label>
+                <textarea name="overig" id="overig" class="form-input" rows="4"></textarea>
             </div>
 
             <input type="submit" value="Verstuur melding">

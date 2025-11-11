@@ -45,9 +45,9 @@ require_once '../components/header.php';
     ?>
 
     <!-- Formulier -->
-    <form action="update.php" method="POST">
-        <!-- Hidden field voor id -->
-        <input type="hidden" name="id" value="<?php echo $melding['id']; ?>">
+    <form action="<?php echo $base_url; ?>/app/Http/Controllers/meldingenController.php" method="POST">
+        <input type="hidden" name="action" value="update"> <!-- toegevoegd -->
+        <input type="hidden" name="id" value="<?php echo $melding['id']; ?>"> <!-- toegevoegd -->
 
         <div class="form-group">
             <label>Naam attractie:</label>

@@ -3,6 +3,8 @@ require_once '../../../config/conn.php';
 
 // Haal de actie op
 $action = $_POST['action'];
+$errors = []; // toevoegen
+
 
 if($action == "create") {
 
@@ -63,22 +65,14 @@ if($action == "update") {
         $errors[] = "Vul voor capaciteit een geldig getal in.";
     }
 
-    if(isset($_POST['prioriteit'])) {
-        $prioriteit = 1; // aangevinkt
-    } else {
-        $prioriteit = 0; // niet aangevinkt
-    }
-
+    $prioriteit = isset($_POST['prioriteit']) ? 1 : 0;
     $melder = $_POST['melder'];
     if(empty($melder)) {
         $errors[] = "Vul de naam van de melder in.";
     }
-
     $overig = $_POST['overig'];
 
-    // Als er geen errors zijn, update uitvoeren
     if(empty($errors)) {
-        require_once '../../../config/conn.php';
         $query = "UPDATE meldingen 
                   SET capaciteit = :capaciteit, 
                       prioriteit = :prioriteit, 
@@ -93,12 +87,19 @@ if($action == "update") {
             ":overige_info" => $overig,
             ":id" => $id
         ]);
-
-        // Terugsturen naar index.php
         header("Location: ../../../resources/views/meldingen/index.php?msg=Melding opgeslagen"); 
         exit;
     } else {
-        // Hier kun je eventueel errors tonen of terugsturen naar het formulier
         print_r($errors);
     }
 }
+
+if($action == "delete") {
+    $id = $_POST['id'];
+    $query = "DELETE FROM meldingen WHERE id = :id";
+    $statement = $conn->prepare($query);
+    $statement->execute([":id" => $id]);
+    header("Location: ../../../resources/views/meldingen/index.php?msg=Melding verwijderd"); 
+    exit;
+}
+?>

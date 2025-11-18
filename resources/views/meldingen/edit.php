@@ -3,7 +3,13 @@
 
 <head>
     <title>StoringApp / Meldingen / Aanpassen</title>
-    <?php require_once '../components/head.php'; ?>
+    <?php require_once '../components/head.php'; 
+    session_start();
+if(!isset($_SESSION['user_id'])){
+ $msg = "Je moet eerst inloggen!";
+ header("Location: ../../../login.php?msg=$msg");
+ exit; 
+}?>
 </head>
 
 <body>

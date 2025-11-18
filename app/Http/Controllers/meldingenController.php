@@ -1,6 +1,11 @@
 <?php
 require_once '../../../config/conn.php';
-
+session_start();
+if(!isset($_SESSION['user_id'])){
+ $msg = "Je moet eerst inloggen!";
+ header("Location: ../../../login.php?msg=$msg");
+ exit; 
+}
 // Haal de actie op
 $action = $_POST['action'];
 $errors = []; // toevoegen
